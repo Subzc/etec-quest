@@ -60,7 +60,7 @@ export function Sidebar() {
               href="/admin"
               className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group"
             >
-              <ShieldUser className="h-5 w-5 text-secondary/70 group-hover:text-secondary" />
+              <ShieldCheck className="h-5 w-5 text-secondary/70 group-hover:text-secondary" />
               <span className="font-label-sm text-label-sm">MESTRE (ADMIN)</span>
             </Link>
           </div>
