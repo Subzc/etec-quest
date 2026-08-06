@@ -91,7 +91,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user) {
         const ref = doc(db, "users", user.uid);
         const snap = await getDoc(ref);
-        setProfile(snap.exists() ? (snap.data() as UserProfile) : null);
+        if (snap.exists()) {
+          setProfile(snap.data() as UserProfile);
+        } else {
+          // Usuário autenticado mas sem perfil no Firestore (ex.: a escrita
+          // falhou no cadastro por regra de segurança). Cria agora.
+          const provider = user.providerData[0]?.providerId === "google.com" ? "google" : "password";
+          const p = await ensureUserProfile(user, provider);
+          setProfile(p);
+        }
       } else {
         setProfile(null);
       }
