@@ -1,0 +1,87 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // Usuários só podem ler/editar o próprio documento (exceto campos sensíveis,
+    // que idealmente são atualizados via Cloud Functions em produção).
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+
+      match /{subcollection=**} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Conteúdo pedagógico: leitura pública para publicados, escrita só para admin.
+    match /subjects/{subjectId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+
+      match /modules/{moduleId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+
+        match /lessons/{lessonId} {
+          allow read: if isSignedIn();
+          allow write: if isAdmin();
+
+          match /questions/{questionId} {
+            allow read: if isSignedIn();
+            allow write: if isAdmin();
+          }
+        }
+      }
+
+      match /bosses/{bossId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+      }
+    }
+
+    match /dungeons/{dungeonId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /mockExams/{examId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+
+      match /questions/{questionId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+      }
+    }
+
+    match /rankings/{period} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /npcs/{npcId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /mapAreas/{areaId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
