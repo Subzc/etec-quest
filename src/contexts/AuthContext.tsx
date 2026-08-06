@@ -57,13 +57,13 @@ async function ensureUserProfile(user: User, provider: "google" | "password", di
   const snap = await getDoc(ref);
   if (snap.exists()) return snap.data() as UserProfile;
 
-  const nowISO = new Date().toISOString();
+const nowISO = new Date().toISOString();
   const profile: UserProfile = {
     uid: user.uid,
     displayName: displayNameOverride ?? user.displayName ?? "Aventureiro",
     username: usernameOverride ?? user.uid.slice(0, 8),
     email: user.email ?? "",
-    photoURL: user.photoURL ?? undefined,
+    ...(user.photoURL ? { photoURL: user.photoURL } : {}),
     authProvider: provider,
     createdAt: nowISO,
     updatedAt: nowISO,
