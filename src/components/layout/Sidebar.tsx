@@ -10,7 +10,7 @@ import {
   Castle,
   Backpack,
   Trophy,
-  ShieldUser,
+  ShieldCheck,
 } from "lucide-react";
 
 const NAV_ITEMS = [
