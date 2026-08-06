@@ -43,6 +43,7 @@ export function Sidebar() {
             <Link
               key={path}
               href={path}
+              prefetch={false}
               className={cn(
                 "flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group",
                 active && "bg-primary-container/20 text-primary font-semibold",
