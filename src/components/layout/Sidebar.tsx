@@ -59,6 +59,7 @@ export function Sidebar() {
           <div className="pt-lg border-t border-outline-variant/20 mt-lg">
             <Link
               href="/admin"
+              prefetch={false}
               className="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all group"
             >
               <ShieldCheck className="h-5 w-5 text-secondary/70 group-hover:text-secondary" />
